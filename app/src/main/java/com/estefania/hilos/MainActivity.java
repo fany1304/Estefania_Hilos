@@ -1,5 +1,6 @@
 package com.estefania.hilos;
 
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import static com.estefania.hilos.R.id.salida;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         int n = Integer.parseInt(entrada.getText().toString());
         salida.append(n + "! = ");
-        int res = factorial(n);
-        salida.append(res + "\n");
+        MiThread thread = new MiThread(n);
+        thread.start();
     }
 
     public int factorial(int n){
@@ -51,4 +54,31 @@ public class MainActivity extends AppCompatActivity {
         }
         return res;
     }
+
+    class MiThread extends Thread{
+
+        private int n, res;
+
+        public MiThread(int n){
+
+            this.n = n;
+        }
+
+        @Override
+        public void run(){
+
+            res = factorial(n);
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    salida.append(res + "\n");
+                }
+            });
+        }
+    }
+
 }
+
+
